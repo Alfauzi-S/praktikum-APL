@@ -50,10 +50,11 @@ int main() {
             int pilihan;
             cout << "\nMasukan Pilihan: ";
             cin >> pilihan;
+            cin.clear();
             cin.ignore();
 
             int jam, menit, detik;
-
+            
             switch (pilihan) {
                 case 1: 
                     cout << "\n----------------------------------\n";
