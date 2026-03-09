@@ -1,7 +1,7 @@
 #include <iostream>
 #include <tabulate/table.hpp>
 
-using namespace std; 
+using namespace std;
 using namespace tabulate;
 
 struct alamat {
@@ -10,11 +10,16 @@ struct alamat {
     string provinsi;
 };
 
-struct pembeli {
+struct pengguna {
     string nama;
-    string password;
+    string password; 
     string email;
     alamat alamat;
+};
+
+struct dataAdmin {
+    string nama;
+    string password;
 };
 
 struct material {
@@ -32,15 +37,17 @@ struct produk {
     material material;
 };
 
-# define maxuser 100
-# define maxproduk 100
-int userIndex = 0;
-int mabelIndex = 5;
-pembeli user[maxuser];
-produk mabel[maxproduk];
+#define maxadmin 3
+#define maxuser 100
+#define maxproduk 25
 
-string namaAdmin = "Alfauzi";
-string passwordAdmin ="006";
+int adminIndex = 3;
+int userIndex = 1;
+int mabelIndex = 5;
+
+dataAdmin admin[maxadmin];
+pengguna user[maxuser];
+produk mabel[maxproduk];
 
 int main() {
     mabel[0].idProduk = "PRD001";
@@ -84,559 +91,347 @@ int main() {
     mabel[4].jenisProduk = "Kursi";
     mabel[4].stock = 20;
     mabel[4].harga = 1200000;
-    mabel[4].material.idMaterial = "MAT001"; 
+    mabel[4].material.idMaterial = "MAT001";
     mabel[4].material.namaMaterial = "Kayu Jati";
     mabel[4].material.jenisMaterial = "Kayu Solid";
 
-    string pilihan, currentUser;
-    bool loginSuccess = false;
-    bool admin = false;
+    user[0].nama = "Muhammad Alfauzi Syahputra";
+    user[0].password = "2509106006";
+    user[0].email = "muhammad.alfauzi256@gmail.com";
+    user[0].alamat.jalan = "JL. Ery Suparjan";
+    user[0].alamat.kota = "Samarinda";
+    user[0].alamat.provinsi = "Kalimantan Timur";
+
+    admin[0].nama = "Alfauzi";
+    admin[0].password = "006";
+    admin[1].nama = "admin";
+    admin[1].password = "123";
+    admin[2].nama = "ceoAsli";
+    admin[2].password = "000";
+
+    string pilihan;
+    string currentUser;
+    bool berhasilLogin = false;
+    bool isAdmin = false;
 
     while (true) {
         system("cls");
-        cout << "\n1. Login\n";
-        cout << "2. Register\n";
-        cout << "0. Exit\n";
-        cout << "\nMasukan Pilihan: ";
-        cin >> pilihan; 
-        cin.ignore();
+        cout << "\n=== MENU UTAMA ===" << endl;
+        cout << "1. Login" << endl;
+        cout << "2. Register" << endl;
+        cout << "0. Exit Program" << endl;
+        cout << "Masukkan Pilihan: ";
+        getline(cin, pilihan);
 
-        if (pilihan == "1") {
+        if (pilihan == "1") { 
             system("cls");
-            string innama, inpassword;
-            int kesempatanLogin = 3;
-            while (kesempatanLogin > 0 && !loginSuccess) {
-                cout << "\nMasukan Nama: ";
-                getline(cin, innama);
-                cout << "\nMasukan Password: ";
-                getline(cin, inpassword);
+            string inNama, inPassword;
+            int kesempatan = 3;
 
-                if(innama == namaAdmin && inpassword == passwordAdmin) {
-                    cout << "\nLogin Berhasil, selamat datang admin " << innama << "\n";
-                    loginSuccess = true;
-                    admin = true;
-                    currentUser = innama;
-                    system("pause");
-                } else {
-                    for(int i = 0; i < userIndex; i++) {
-                        if(user[i].nama == innama && user[i].password == inpassword) {
-                            cout << "\nLogin Berhasil, selamat datang " << innama << "\n";
-                            loginSuccess = true;
-                            currentUser = innama;
-                            system("pause");
-                            break;
+            cout << "\n=== LOGIN ===" << endl;
+            while (kesempatan > 0 && !berhasilLogin) {
+                cout << "\nMasukkan Nama: ";
+                getline(cin, inNama);
+                cout << "Masukkan Password: ";
+                getline(cin, inPassword);
 
-                        }
+
+                bool adminFound = false;
+                for (int i = 0; i < adminIndex; i++) {
+                    if (admin[i].nama == inNama && admin[i].password == inPassword) {
+                        cout << "\nLogin Admin Berhasil! Selamat Datang, " << inNama << endl;
+                        berhasilLogin = true;
+                        isAdmin = true;
+                        currentUser = admin[i].nama;
+                        adminFound = true;
+                        break;
                     }
                 }
+                if (adminFound) break;
 
-                if (!loginSuccess) {
-                    kesempatanLogin--;
-                    if(kesempatanLogin > 0) {
-                        cout << "\nLogin Gagal. Tersisa " << kesempatanLogin << " kesempatan.\n";
+                bool userFound = false;
+                for (int i = 0; i < userIndex; i++) {
+                    if (user[i].nama == inNama && user[i].password == inPassword) {
+                        cout << "\nLogin User Berhasil! Selamat Datang, " << inNama << endl;
+                        berhasilLogin = true;
+                        isAdmin = false;
+                        currentUser = user[i].nama;
+                        userFound = true;
+                        break;
+                    }
+                }
+                if (userFound) break;
+
+                if (!berhasilLogin) {
+                    kesempatan--;
+                    if (kesempatan > 0) {
+                        cout << "\nLogin Gagal! Sisa percobaan: " << kesempatan << endl;
                         system("pause");
                     } else {
-                        cout << "\nLogin Gagal. Anda telah mencapai batas percobaan maksimal (3 kali).\n";
-                        cout << "Program Berhenti\n";
+                        cout << "\nLogin Gagal! Anda telah mencapai batas percobaan maksimal." << endl;
+                        cout << "Program akan keluar..." << endl;
                         return 0;
                     }
                 }
             }
-
         } else if (pilihan == "2") {
             system("cls");
+            cout << "\n=== REGISTER USER ===" << endl;
+
             if (userIndex >= maxuser) {
-                cout << "\nMaaf, Jumlah user sudah mencapai batas maksimum.\n";
+                cout << "Maaf, jumlah user maksimum (" << maxuser << ") telah tercapai." << endl;
                 system("pause");
-            } else {
-                string tempInnama;
-                cout << "\nMasukan Nama: ";
-                getline(cin, tempInnama);
+            }
 
-                bool duplikat = false;
-                for(int i = 0; i < userIndex; i++) {
-                    if(user[i].nama == tempInnama) {
-                        duplikat = true;
-                        break;
-                    }
-                }
+            string inNama;
+            cout << "Masukkan Nama: ";
+            getline(cin, inNama);
 
-                if (duplikat) {
-                    cout << "\nNama sudah digunakan.\n";
-                    cout << "Kembali ke menu.\n";
-                    system("pause");
-                } else {
-                    user[userIndex].nama = tempInnama;
-                    cout << "\nMasukan Password: ";
-                    getline(cin, user[userIndex].password);
-                    cout << "\nMasukan Email: ";
-                    getline(cin, user[userIndex].email);
-                    cout << "\nMasukan Alamat Jalan: ";
-                    getline(cin, user[userIndex].alamat.jalan);
-                    cout << "\nMasukan Alamat Kota: ";
-                    getline(cin, user[userIndex].alamat.kota);
-                    cout << "\nMasukan Alamat Provinsi: ";
-                    getline(cin, user[userIndex].alamat.provinsi);
-                    userIndex++;
-                    cout << "\nRegistrasi berhasil! Akun untuk '" << user[userIndex - 1].nama << "' telah dibuat." << endl;
-                    cout << "Jumlah user saat ini: " << userIndex << endl;
-                    system("pause");
+            bool isDuplicate = false;
+            for (int i = 0; i < userIndex; i++) {
+                if (user[i].nama == inNama) {
+                    isDuplicate = true;
+                    break;
                 }
             }
 
+            if (isDuplicate) {
+                cout << "Nama sudah digunakan. Silakan coba nama lain." << endl;
+                system("pause");
+            } else {
+                user[userIndex].nama = inNama;
+                cout << "Masukkan Password: ";
+                getline(cin, user[userIndex].password);
+                cout << "Masukkan Email: ";
+                getline(cin, user[userIndex].email);
+                cout << "Masukkan Alamat Jalan: ";
+                getline(cin, user[userIndex].alamat.jalan);
+                cout << "Masukan kota: ";
+                getline(cin, user[userIndex].alamat.kota);
+                cout << "Masukkan Provinsi: ";
+                getline(cin, user[userIndex].alamat.provinsi);
+                cout << "\nRegistrasi berhasil! Akun untuk '" << user[userIndex].nama << "' telah dibuat." << endl;
+
+                userIndex++;
+                cout << "Jumlah user saat ini: " << userIndex << endl;
+                system("pause");
+            }
         } else if (pilihan == "0") {
-            cout << "\nKeluar dari Program\n";
-            return 0;
+            cout << "\nKeluar dari program..." << endl;
+            break; 
         } else {
-            cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
+            cout << "\nPilihan tidak valid. Silakan coba lagi." << endl;
             system("pause");
         }
 
-        if(loginSuccess) {
-            if(admin) {
-                system("cls");
-                string adminPilihan;
-                while(true) {
+        if (berhasilLogin) {
+            if (isAdmin) {
+                while (berhasilLogin && isAdmin) {
                     system("cls");
-                    cout << "\n1. Tampilkan Produk Mabel\n";
-                    cout << "2. Update Produk Mabel\n";
-                    cout << "3. Buat Produk Mabel\n";
-                    cout << "4. Hapus Produk Mabel\n";
-                    cout << "0. Logout\n";
-                    cout << "\nMasukan Pilihan: ";
-                    cin >> adminPilihan; 
-                    cin.ignore();
+                    cout << "\n=== MENU ADMIN ===" << endl;
+                    cout << "1. Read Produk" << endl;
+                    cout << "2. Update Produk" << endl;
+                    cout << "3. Create Produk" << endl;
+                    cout << "4. Delete Produk" << endl;
+                    cout << "0. Logout" << endl;
+                    cout << "Masukkan Pilihan: ";
+                    getline(cin, pilihan);
 
-                    if(adminPilihan == "1") {
+                    if (pilihan == "1") {
                         system("cls");
-                        if(mabelIndex == 0) {
-                            cout << "\nTidak ada Data\n";
+                        cout << "\n=== DAFTAR PRODUK ===" << endl;
+                        if (mabelIndex == 0) {
+                            cout << "Tidak ada data produk." << endl;
                         } else {
-                            Table tablemabel;
-
-                            tablemabel.add_row({"ID Mabel", "Nama Mabel", "Jenis Mabel", "Stock", "Harga", "ID Material", "Nama Material", "Jenis Material"});
-
-                            for(int i = 0; i < mabelIndex; i++) {
-                                tablemabel.add_row({
-                                    mabel[i].idProduk,
-                                    mabel[i].namaProduk,
+                            Table table;
+                            table.add_row({"ID Produk", "Nama Produk", "Jenis Produk", "Stock", "Harga", "ID Material", "Nama Material", "Jenis Material"});
+                            for (int i = 0; i < mabelIndex; i++) {
+                                table.add_row({
+                                    mabel[i].idProduk, 
+                                    mabel[i].namaProduk, 
                                     mabel[i].jenisProduk,
                                     to_string(mabel[i].stock),
                                     to_string(mabel[i].harga),
-                                    mabel[i].material.idMaterial,
+                                    mabel[i].material.idMaterial, 
                                     mabel[i].material.namaMaterial,
-                                    mabel[i].material.jenisMaterial
-                                });
+                                    mabel[i].material.jenisMaterial});
                             }
-
-                            cout << "\n" << tablemabel << "\n";
+                            cout << table << endl;
+                        }
+                        system("pause");
+                    } else if (pilihan == "2") {
+                        system("cls");
+                        cout << "\n=== UPDATE PRODUK ===" << endl;
+                        if (mabelIndex == 0) {
+                            cout << "Tidak ada data produk untuk diupdate." << endl;
                             system("pause");
-                        }
-                    } else if(adminPilihan == "2") {
-                        system("cls");
-                        if(mabelIndex == 0) {
-                            cout << "\nTidak ada Data\n";
                         } else {
-                            Table tablemabel;
-
-                            tablemabel.add_row({"ID Mabel", "Nama Mabel", "Jenis Mabel", "Stock", "Harga", "ID Material", "Nama Material", "Jenis Material"});
-
-                            for(int i = 0; i < mabelIndex; i++) {
-                                tablemabel.add_row({
-                                    mabel[i].idProduk,
-                                    mabel[i].namaProduk,
+                            Table table;
+                            table.add_row({"ID Produk", "Nama Produk", "Jenis Produk", "Stock", "Harga", "ID Material", "Nama Material", "Jenis Material"});
+                            for (int i = 0; i < mabelIndex; i++) {
+                                table.add_row({
+                                    mabel[i].idProduk, 
+                                    mabel[i].namaProduk, 
                                     mabel[i].jenisProduk,
                                     to_string(mabel[i].stock),
                                     to_string(mabel[i].harga),
-                                    mabel[i].material.idMaterial,
+                                    mabel[i].material.idMaterial, 
                                     mabel[i].material.namaMaterial,
-                                    mabel[i].material.jenisMaterial
-                                });
+                                    mabel[i].material.jenisMaterial});
                             }
-
-                            cout << "\n" << tablemabel << "\n";
-                        }
-
-                        string inID, inKolom, simpan;
-                        string tempID, tempNama, tempJenis, tempIDmat, tempNamamat, tempjenismat;
-                        int tempStock, tempHarga;
-                        bool idFind = false;
-
-                        cout << "\nMasukan ID Mabel yang mau di ubah: ";
-                        cin >> inID;
-                        cin.ignore();
-
-                        for(int i = 0; i < mabelIndex; i++) {
-                            if(inID == mabel[i].idProduk) {
-                                cout << "\nID Mabel di temukan.\n";
-                                idFind = true;
-                                cout << "\n1) ID Mabel\n"  << "2) Nama Mabel\n" << "3) Jenis Mabel\n"  << "4) Stock\n" << "5) Harga\n" << "6) ID Material\n" << "7) Nama Material\n" << "8) Jenis Material\n";
-                                while(true) {
-                                    cout << "\nMasukan kolom apa yang mau di ubah (1/2/3/4/5/6/7/8): ";
-                                    cin >> inKolom;
-                                    cin.ignore();
-
-                                    if(inKolom == "1") {
-                                        cout << "\nKolom ID Mabel " << i + 1 << " : " << mabel[i].idProduk;
-                                        cout << "\n\nMasukan ID Mabel Baru: ";
-                                        getline(cin, tempID);
-
-                                        while(true) {
-                                            cout << "\nSimpan (y/n)? ";
-                                            cin >> simpan;
-                                            cin.ignore();
-
-                                            if(simpan == "y") {
-                                                mabel[i].idProduk = tempID;
-                                                cout << "\nBerhasil di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else if(simpan == "n") {
-                                                cout << "\nGagal di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else {
-                                                cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                            }
-                                        }
-                                        break;
-                                    } else if(inKolom == "2") {
-                                        cout << "\nKolom Nama Mabel " << i + 1 << " : " << mabel[i].namaProduk;
-                                        cout << "\n\nMasukan Nama Mabel Baru: ";
-                                        getline(cin, tempNama);
-
-                                        while(true) {
-                                            cout << "\nSimpan (y/n)? ";
-                                            cin >> simpan;
-                                            cin.ignore();
-
-                                            if(simpan == "y") {
-                                                mabel[i].namaProduk = tempNama;
-                                                cout << "\nBerhasil di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else if(simpan == "n") {
-                                                cout << "\nGagal di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else {
-                                                cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                            }
-                                        }
-                                        break;
-                                    } else if(inKolom == "3") {
-                                        cout << "\nKolom Jenis Mabel " << i + 1 << " : " << mabel[i].jenisProduk;
-                                        cout << "\n\nMasukan Jenis Mabel Baru: ";
-                                        getline(cin, tempJenis);
-
-                                        while(true) {
-                                            cout << "\nSimpan (y/n)? ";
-                                            cin >> simpan;
-                                            cin.ignore();
-
-                                            if(simpan == "y") {
-                                                mabel[i].jenisProduk = tempJenis;
-                                                cout << "\nBerhasil di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else if(simpan == "n") {
-                                                cout << "\nGagal di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else {
-                                                cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                            }
-                                        }
-                                        break;
-                                    } else if(inKolom == "4") {
-                                        cout << "\nKolom Stock " << i + 1 << " : " << mabel[i].stock;
-                                        cout << "\n\nMasukan Stock Baru: ";
-                                        cin >> tempStock;
-                                        cin.ignore();
-
-                                        while(true) {
-                                            cout << "\nSimpan (y/n)? ";
-                                            cin >> simpan;
-                                            cin.ignore();
-
-                                            if(simpan == "y") {
-                                                mabel[i].stock = tempStock;
-                                                cout << "\nBerhasil di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else if(simpan == "n") {
-                                                cout << "\nGagal di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else {
-                                                cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                            }
-                                        }
-                                        break;
-                                    } else if(inKolom == "5") {
-                                        cout << "\nKolom Harga " << i + 1 << " : " << mabel[i].harga;
-                                        cout << "\n\nMasukan Harga Baru: ";
-                                        cin >> tempHarga;
-                                        cin.ignore();
-                                        
-                                        while(true) {
-                                            cout << "\nSimpan (y/n)? ";
-                                            cin >> simpan;
-                                            cin.ignore();
-
-                                            if(simpan == "y") {
-                                                mabel[i].harga = tempHarga;
-                                                cout << "\nBerhasil di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else if(simpan == "n") {
-                                                cout << "\nGagal di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else {
-                                                cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                            }
-                                        }
-                                        break;
-                                    } else if(inKolom == "6") {
-                                        cout << "\nKolom ID Material " << i + 1 << " : " << mabel[i].material.idMaterial;
-                                        cout << "\n\nMasukan ID Material Baru: ";
-                                        getline(cin, tempIDmat);
-                                        
-                                        while(true) {
-                                            cout << "\nSimpan (y/n)? ";
-                                            cin >> simpan;
-                                            cin.ignore();
-
-                                            if(simpan == "y") {
-                                                mabel[i].material.idMaterial = tempIDmat;
-                                                cout << "\nBerhasil di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else if(simpan == "n") {
-                                                cout << "\nGagal di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else {
-                                                cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                            }
-                                        }
-                                        break;
-                                    } else if(inKolom == "7") {
-                                        cout << "\nKolom Nama Material " << i + 1 << " : " << mabel[i].material.namaMaterial;
-                                        cout << "\n\nMasukan Nama Material Baru: ";
-                                        getline(cin, tempNamamat);
-                                        
-                                        while(true) {
-                                            cout << "\nSimpan (y/n)? ";
-                                            cin >> simpan;
-                                            cin.ignore();
-
-                                            if(simpan == "y") {
-                                                mabel[i].material.namaMaterial = tempNamamat;
-                                                cout << "\nBerhasil di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else if(simpan == "n") {
-                                                cout << "\nGagal di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else {
-                                                cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                            }
-                                        }
-                                        break;
-                                    } else if(inKolom == "8") {
-                                        cout << "\nKolom Jenis Material " << i + 1 << " : " << mabel[i].material.jenisMaterial;
-                                        cout << "\n\nMasukan Jenis Material Baru: ";
-                                        getline(cin, tempjenismat);
-                                        
-                                        while(true) {
-                                            cout << "\nSimpan (y/n)? ";
-                                            cin >> simpan;
-                                            cin.ignore();
-
-                                            if(simpan == "y") {
-                                                mabel[i].material.jenisMaterial = tempjenismat;
-                                                cout << "\nBerhasil di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else if(simpan == "n") {
-                                                cout << "\nGagal di simpan\n";
-                                                system("pause");
-                                                break;
-                                            } else {
-                                                cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                            }
-                                        }
-                                        break;
-                                    } else {
-                                        cout << "\nPilihan tidak valid, silahkan coba lagi.\n";
-                                        system("pause");
-                                    }
+                            cout << table << endl;
+    
+                            string updateId;
+                            cout << "\nMasukkan ID Produk yang ingin diupdate: ";
+                            getline(cin, updateId);
+    
+                            int index = -1;
+                            for (int i = 0; i < mabelIndex; i++) {
+                                if (mabel[i].idProduk == updateId) {
+                                    index = i;
+                                    break;
                                 }
-                                break;
-                            } 
-                        }
+                            }
+    
+                            if (index == -1) {
+                                cout << "ID Produk tidak ditemukan." << endl;
+                            } else {
+                                cout << "Produk ditemukan: " << mabel[index].namaProduk << endl;
+                                cout << "Pilih kolom yang ingin diubah:\n";
+                                cout << "1. ID Produk\n2. Nama Produk\n3. Jenis Produk\n4. Stock\n5. Harga\n6. ID Material\n7. Nama Material\n8. Jenis Material\nPilihan: ";
+                                string updatePilihan;
+                                getline(cin, updatePilihan);
 
-                        if(!idFind) {
-                            cout << "\nID Mabel tidak di temukan.\n";
+                                if  (updatePilihan == "1") {
+                                    cout << "Masukkan ID Produk Baru: ";
+                                    getline(cin, mabel[index].idProduk);
+                                } else if  (updatePilihan == "2") {
+                                    cout << "Masukkan Nama Produk Baru: ";
+                                    getline(cin, mabel[index].namaProduk);
+                                } else if  (updatePilihan == "3") {
+                                    cout << "Masukkan Jenis Produk Baru: ";
+                                getline(cin, mabel[index].jenisProduk);
+                                } else if  (updatePilihan == "4") {
+                                    int updateStock;
+                                    while (true) {
+                                        cout << "Masukkan Stock Baru: ";
+                                        cin >> updateStock;
+                                        cin.ignore();
+                                        if(updateStock >= 0) {
+                                            mabel[index].stock = updateStock;
+                                            break;
+                                        } else {
+                                            cout << "Input tidak valid. Masukkan angka positif: ";
+                                        }
+                                    }
+                                } else if  (updatePilihan == "5") {
+                                    int updateHarga;
+                                    while (true) {
+                                        cout << "Masukkan Harga Baru: ";
+                                        cin >> updateHarga;
+                                        cin.ignore();
+                                        if(updateHarga >= 0) {
+                                            mabel[index].harga = updateHarga;
+                                            break;
+                                        } else {
+                                            cout << "Input tidak valid. Masukkan angka positif: ";
+                                        }
+                                    }
+                                } else if  (updatePilihan == "6") {
+                                    cout << "Masukkan ID Material Baru: ";
+                                    getline(cin, mabel[index].material.idMaterial);
+                                } else if  (updatePilihan == "7") {
+                                    cout << "Masukkan Nama Material Baru: ";
+                                    getline(cin, mabel[index].material.namaMaterial);
+                                } else if  (updatePilihan == "8") {
+                                    cout << "Masukkan Jenis Material Baru: ";
+                                    getline(cin, mabel[index].material.jenisMaterial);
+                                } else {
+                                    cout << "Pilihan tidak valid." << endl;
+                                    system("pause");
+                                }
+                                cout << "Produk berhasil diupdate." << endl;
+                            }
                             system("pause");
                         }
-
-                    } else if(adminPilihan == "3") {
+                    } else if (pilihan == "3") {
                         system("cls");
-                        string tempIDproduk;
-                        if(mabelIndex >= maxproduk) {
-                            cout << "\nMaaf, Jumlah Produk sudah mencapai batas maksimum.\n";
+                        cout << "\n=== CREATE PRODUK ===" << endl;
+
+                        if (mabelIndex >= maxproduk) {
+                            cout << "Maaf, jumlah produk maksimum (" << maxproduk << ") telah tercapai." << endl;
                             system("pause");
                         } else {
-                            cout << "\nMasukan ID Produk: ";
-                            getline(cin, tempIDproduk);
-
+                            string idBaru;
+                            cout << "Masukkan ID Produk: ";
+                            getline(cin, idBaru);
+    
                             bool duplikat = false;
-                            for(int i = 0; i < mabelIndex; i++) {
-                                if(mabel[i].idProduk == tempIDproduk) {
+                            for (int i = 0; i < mabelIndex; i++) {
+                                if (mabel[i].idProduk == idBaru) {
                                     duplikat = true;
                                     break;
                                 }
                             }
-
-                            if(duplikat) {
-                                cout << "\nID sudah digunakan.\n";
-                                cout << "Kembali ke menu.\n";
-                                system("pause");
+    
+                            if (duplikat) {
+                                cout << "ID Produk sudah digunakan. Silakan coba ID lain." << endl;
                             } else {
-                                mabel[mabelIndex].idProduk = tempIDproduk;
-                                cout << "\nMasukan Nama Produk: ";
+                                mabel[mabelIndex].idProduk = idBaru;
+                                cout << "Masukkan Nama Produk: ";
                                 getline(cin, mabel[mabelIndex].namaProduk);
-                                cout << "\nMasukan Jenis Produk: ";
+                                cout << "Masukkan Jenis Produk: ";
                                 getline(cin, mabel[mabelIndex].jenisProduk);
-                                cout << "\nMasukan ID Material: ";
-                                getline(cin, mabel[mabelIndex].material.idMaterial);
-                                cout << "\nMAsukan Nama Material: ";
-                                getline(cin, mabel[mabelIndex].material.namaMaterial);
-                                cout << "\nMasukan Jenis Material: ";
-                                getline(cin, mabel[mabelIndex].material.jenisMaterial);
-                                cout << "\nBerhasil Membuat Produk Mabel\n";
-                                mabelIndex++;
-                                system("pause");
-                            }
-                        }
-                    } else if(adminPilihan == "4") {
-                        system("cls");
-                        if(mabelIndex == 0) {
-                            cout << "\nTidak ada Data\n";
-                        } else {
-                            Table tablemabel;
-
-                            tablemabel.add_row({"ID Mabel", "Nama Mabel", "Jenis Mabel", "Stock", "Harga", "ID Material", "Nama Material", "Jenis Material"});
-
-                            for(int i = 0; i < mabelIndex; i++) {
-                                tablemabel.add_row({
-                                    mabel[i].idProduk,
-                                    mabel[i].namaProduk,
-                                    mabel[i].jenisProduk,
-                                    to_string(mabel[i].stock),
-                                    to_string(mabel[i].harga),
-                                    mabel[i].material.idMaterial,
-                                    mabel[i].material.namaMaterial,
-                                    mabel[i].material.jenisMaterial
-                                });
-                            }
-
-                            cout << "\n" << tablemabel << "\n";
-
-                            string inID;
-                            bool idFind = false;
-                            cout << "\nMasukan ID Mabel yang mau di hapus: ";
-                            cin >> inID;
-                            cin.ignore();
-
-                            for(int i = 0; i < mabelIndex; i++) {
-                                if(inID == mabel[i].idProduk) {
-                                    cout << "\nID Mabel di temukan.\n";
-                                    int index = i;
-                                    idFind = true;
-
-                                    for(int j = index; j < mabelIndex - 1; j++) {
-                                        mabel[j] = mabel[j + 1];
+                                int stockBaru;
+                                while (true) {
+                                    cout << "Masukkan Stock Baru: ";
+                                    cin >> stockBaru;
+                                    cin.ignore();
+                                    if(stockBaru >= 0) {
+                                        mabel[mabelIndex].stock = stockBaru;
+                                        break;
+                                    } else {
+                                        cout << "Input tidak valid. Masukkan angka positif: ";
                                     }
-                                    mabelIndex--;
-                                    cout << "\nBerhasil Menghapus Produk Mabel\n";
-                                    system("pause");
-                                    break;
                                 }
-                            }
-
-                            if(!idFind) {
-                                cout << "\nID Mabel tidak di temukan.\n";
-                                system("pause");
-                            }
-                        }
-                    } else if(adminPilihan == "0") {
-                        cout << "\nAnda Telah Logout\n";
-                        system("pause");
-                        break;
-                    } else {
-                        cout << "\nPilihan tidak valid, silahkan coba lagi.";
-                        system("pause");
-                    }
-                }
-            } else {
-                string userPilihan;
-                while(true) {
-                    system("cls");
-                    cout << "\n1. Lihat Data User\n";
-                    cout << "2. Beli Produk\n";
-                    cout << "0. Logout\n";
-                    cout << "\nMasukan Pilihan: ";
-                    cin >> userPilihan; 
-                    cin.ignore();
-
-                    if(userPilihan == "1") {
-                        system("cls");
-                        if(userIndex == 0) {
-                            cout << "\nTidak ada Data\n";
-                        } else {
-                            bool userDitemukan = false;
-
-                            for(int i = 0; i < userIndex; i++) {
-                                if(user[i].nama == currentUser) {
-                                    Table tableUser;
-                                    tableUser.add_row({"Nama", "Password", "Email", "Jalan", "Kota", "Provinsi"});
-                                    
-                                    tableUser.add_row({
-                                        user[i].nama,
-                                        user[i].password,
-                                        user[i].email,
-                                        user[i].alamat.jalan,
-                                        user[i].alamat.kota,
-                                        user[i].alamat.provinsi
-                                    });
-
-                                    cout << "\n" << tableUser << "\n";
-                                    userDitemukan = true;
-                                    break;
+                                int hargaBaru;
+                                while (true) {
+                                    cout << "Masukkan Harga Baru: ";
+                                    cin >> hargaBaru;
+                                    cin.ignore();
+                                    if(hargaBaru >= 0) {
+                                        mabel[mabelIndex].harga = hargaBaru;
+                                        break;
+                                    } else {
+                                        cout << "Input tidak valid. Masukkan angka positif: ";
+                                    }
                                 }
-                            }
-
-                            if(!userDitemukan) {
-                                cout << "\nUser tidak ditemukan.\n";
+                                cout << "Masukkan ID Material: ";
+                                getline(cin, mabel[mabelIndex].material.idMaterial);
+                                cout << "Masukkan Nama Material: ";
+                                getline(cin, mabel[mabelIndex].material.namaMaterial);
+                                cout << "Masukkan Jenis Material: ";
+                                getline(cin, mabel[mabelIndex].material.jenisMaterial);
+                                mabelIndex++;
+    
+                                cout << "Produk berhasil ditambahkan." << endl;
                             }
                             system("pause");
                         }
-                    } else if(userPilihan == "2") {
+                    } else if (pilihan == "4") {
                         system("cls");
-                        if(mabelIndex == 0) {
-                            cout << "\nTidak ada Data\n";
+                        cout << "\n=== DELETE PRODUK ===" << endl;
+
+                        if (mabelIndex == 0) {
+                            cout << "Tidak ada data produk untuk dihapus." << endl;
+                            system("pause");
                         } else {
-                            Table tablemabel;
 
-                            tablemabel.add_row({"ID Mabel", "Nama Mabel", "Jenis Mabel", "Stock", "Harga", "ID Material", "Nama Material", "Jenis Material"});
+                            Table table;
+                            table.add_row({"ID Produk", "Nama Produk", "Jenis Produk", "Stock", "Harga", "ID Material", "Nama Material", "Jenis Material"});
 
-                            for(int i = 0; i < mabelIndex; i++) {
-                                tablemabel.add_row({
+                            for (int i = 0; i < mabelIndex; i++) {
+                                table.add_row({
                                     mabel[i].idProduk,
                                     mabel[i].namaProduk,
                                     mabel[i].jenisProduk,
@@ -648,53 +443,159 @@ int main() {
                                 });
                             }
 
-                            cout << "\n" << tablemabel << "\n";
+                            cout << table << endl;
 
-                            string inID;
-                            bool idFind= false;
-                            int jumlah;
-                            cout << "\nMasukan ID Mabel yang mau di beli: ";
-                            getline(cin, inID);
-                                
-                            for(int i = 0; i < mabelIndex; i++) {
-                                if(inID == mabel[i].idProduk) {
-                                    cout << "\nID Mabel ditemukan.\n";
-                                    idFind = true;
-                                        
-                                    cout << "\nMasukan Jumlah Beli: ";
-                                    cin >> jumlah;
-                                    cin.ignore();
-                                    
-                                    if(jumlah <= mabel[i].stock && jumlah > 0) {
-                                        mabel[i].stock -= jumlah;
-                                        cout << "Berhasil Membeli Produk (hanya sebuah demo yang dimana hanya menggurangi stock)\n";
-                                        cout << "Sisa Stock: " << mabel[i].stock << endl;
-                                        system("pause");
-                                        break;
-                                    } else {
-                                        cout << "Stok tidak mencukupi atau jumlah tidak valid.\n";
-                                        cout << "Stok Tersedia: " << mabel[i].stock << endl;
-                                        system("pause");
-                                    }
+                            string deleteId;
+                            cout << "\nMasukkan ID Produk yang ingin dihapus: ";
+                            getline(cin, deleteId);
+
+                            int indexDelete = -1;
+
+                            for (int i = 0; i < mabelIndex; i++) {
+                                if (mabel[i].idProduk == deleteId) {
+                                    indexDelete = i;
+                                    break;
                                 }
-                                break;
                             }
-                            
-                            if(!idFind) {
-                                cout << "\nID Mabel tidak ditemukan.\n";
-                                system("pause");
+
+                            if (indexDelete == -1) {
+                                cout << "ID Produk tidak ditemukan." << endl;
+                            } else {
+
+                                for (int i = indexDelete; i < mabelIndex - 1; i++) {
+                                    mabel[i] = mabel[i + 1];
+                                }
+
+                                mabelIndex--;
+
+                                cout << "Produk berhasil dihapus." << endl;
                             }
+
+                            system("pause");
                         }
-                    } else if(userPilihan == "0") {
-                        cout << "\nAnda Telah Logout\n";
+                    } else if (pilihan == "0") {
+                        cout << "\nLogout dari akun admin..." << endl;
+                        berhasilLogin = false;
+                        isAdmin = false;
                         system("pause");
                         break;
                     } else {
-                        cout << "\nPilihan tidak valid, silahkan coba lagi.";
+                        cout << "\nPilihan tidak valid. Silakan coba lagi." << endl;
+                        system("pause");
+                    }
+                } 
+            } else {
+                while (berhasilLogin && !isAdmin) {
+                    system("cls");
+                    cout << "\n=== MENU USER ===" << endl;
+                    cout << "1. Read Data Saya" << endl;
+                    cout << "2. Read Produk dan Beli" << endl;
+                    cout << "0. Logout" << endl;
+                    cout << "Masukkan Pilihan: ";
+                    getline(cin, pilihan);
+
+                    if (pilihan == "1") {
+                        system("cls");
+                        cout << "\n=== DATA PROFIL SAYA ===" << endl;
+
+                        bool userFound = false;
+                        for (int i = 0; i < userIndex; i++) {
+                            if (user[i].nama == currentUser) {
+                                Table table;
+                                table.add_row({"Nama", "Password (NIM)", "Email", "Alamat Jalan", "Kota", "Provinsi"});
+                                table.add_row({
+                                    user[i].nama, 
+                                    user[i].password, 
+                                    user[i].email,
+                                    user[i].alamat.jalan, 
+                                    user[i].alamat.kota, 
+                                    user[i].alamat.provinsi});
+
+                                cout << table << endl;
+                                userFound = true;
+                                break;
+                            }
+                        }
+                        if (!userFound) {
+                            cout << "Data user tidak ditemukan. Silakan login ulang." << endl;
+                        }
+                        system("pause");
+                    } else if (pilihan == "2") {
+                        system("cls");
+                        cout << "\n=== DAFTAR PRODUK ===" << endl;
+                        if (mabelIndex == 0) {
+                            cout << "Tidak ada data produk." << endl;
+                        } else {
+                            Table table;
+                            table.add_row({"ID Produk", "Nama Produk", "Jenis Produk", "Stock", "Harga", "ID Material", "Nama Material", "Jenis Material"});
+
+                            for (int i = 0; i < mabelIndex; i++) {
+                                table.add_row({
+                                    mabel[i].idProduk,
+                                    mabel[i].namaProduk,
+                                    mabel[i].jenisProduk,
+                                    to_string(mabel[i].stock),
+                                    to_string(mabel[i].harga),
+                                    mabel[i].material.idMaterial,
+                                    mabel[i].material.namaMaterial,
+                                    mabel[i].material.jenisMaterial
+                                });
+                            }
+
+                            cout << table << endl;
+
+                            string beliId;
+                            int jumlah;
+                            cout << "\nMasukkan ID Produk yang ingin dibeli: ";
+                            getline(cin, beliId);
+
+                            int indexBeli = -1;
+                            for (int i = 0; i < mabelIndex; i++) {
+                                if (mabel[i].idProduk == beliId) {
+                                    indexBeli = i;
+                                    break;
+                                }
+                            }
+
+                            if (indexBeli == -1) {
+                                cout << "ID Produk tidak ditemukan." << endl;
+                            } else {
+                                cout << "Produk ditemukan: " << mabel[indexBeli].namaProduk << ", Stock: " << mabel[indexBeli].stock << endl;
+                            
+                                while (true) {
+                                    cout << "Masukkan jumlah yang ingin dibeli: ";
+                                    cin >> jumlah;
+                                    cin.ignore();
+                                    if(jumlah > 0) {
+                                        break;
+                                    } else {
+                                        cout << "Input tidak valid. Masukkan angka positif: " << endl;
+                                    }
+                                }
+
+                                if (jumlah > mabel[indexBeli].stock) {
+                                    cout << "Stok tidak mencukupi. Stok tersedia: " << mabel[indexBeli].stock << endl;
+                                } else {
+                                    mabel[indexBeli].stock -= jumlah;
+                                    cout << "Pembelian berhasil! Sisa stock " << mabel[indexBeli].namaProduk << ": " << mabel[indexBeli].stock << endl;
+                                }
+                            }
+                        }
+                        system("pause");
+                    } else if (pilihan == "0") {
+                        cout << "\nLogout dari akun user..." << endl;
+                        berhasilLogin = false;
+                        isAdmin = false;
+                        system("pause");
+                        break;
+                    } else {
+                        cout << "\nPilihan tidak valid. Silakan coba lagi." << endl;
                         system("pause");
                     }
                 }
             }
         }
     }
+    cout << "\nProgram selesai." << endl;
+    return 0;
 }
