@@ -79,7 +79,7 @@ void tampilkanMenuUser() {
     cout << "Masukkan Pilihan: ";
 }
 
-// Menggunakan Address-of Operator (&) sebagai parameter fungsi
+// Menggunakan Address of Operator (&) sebagai parameter fungsi
 // isAdmin dan currentUser dipass by reference menggunakan &
 bool login(bool &isAdmin, string &currentUser) {
     int kesempatan = 3;
@@ -192,7 +192,7 @@ void tampilkanMabel() {
     }
 }
 
-// Menggunakan Dereference Operator (*) - pointer ke struct produk
+// Menggunakan Dereference Operator (*) pointer ke struct produk
 // pProduk adalah pointer ke elemen produk yang akan diupdate
 void updateFieldProduk(produk *pProduk) {
     cout << "Pilih kolom yang ingin diubah:\n";
@@ -278,14 +278,14 @@ void updateProduk() {
     } else {
         cout << "Produk ditemukan: " << mabel[index].namaProduk << endl;
         // Mengoper pointer ke struct produk menggunakan address-of operator
-        produk *pProdukDipilih = &mabel[index]; // pointer ke struct produk (implementasi pointer pada struct)
+        produk *pProdukDipilih = &mabel[index]; // pointer pada struct)
         updateFieldProduk(pProdukDipilih);
         cout << "Produk berhasil diupdate." << endl;
     }
     system("pause");
 }
 
-// Menggunakan Dereference Operator (*) - pointer ke int mabelIndex
+// Menggunakan Dereference Operator (*) pointer ke int mabelIndex
 void createProduk(int *pMabelIndex) {
     cout << "=== CREATE PRODUK ===" << endl;
     if (*pMabelIndex >= maxproduk) {
@@ -413,7 +413,7 @@ void tampilkanDataUser(string currentUser) {
     }
 }
 
-// Mengembalikan pointer ke struct pengguna (implementasi pointer pada struct)
+// Mengembalikan pointer ke struct pengguna
 // Menggunakan pointer sebagai return type
 pengguna* cariPointerUser(string currentUser) {
     for (int i = 0; i < userIndex; i++) {
@@ -617,7 +617,7 @@ int main() {
         if (pilihan == "1") {
             system("cls");
             bool isAdmin = false;
-            bool loginSukses = login(isAdmin, currentUser); // & operator (pass by reference)
+            bool loginSukses = login(isAdmin, currentUser); // & pass by reference
             if (loginSukses) {
                 if (isAdmin) {
                     while (loginSukses && isAdmin) {
@@ -634,7 +634,7 @@ int main() {
                             updateProduk();
                         } else if (pilihan == "3") {
                             system("cls");
-                            createProduk(&mabelIndex); // Mengoper address mabelIndex (address-of operator saat pemanggilan)
+                            createProduk(&mabelIndex); // address of operator
                         } else if (pilihan == "4") {
                             system("cls");
                             deleteProduk();
@@ -682,7 +682,7 @@ int main() {
             }
         } else if (pilihan == "2") {
             system("cls");
-            registerUser(&userIndex); // Mengoper address userIndex (address-of operator saat pemanggilan)
+            registerUser(&userIndex); // address of operator
         } else if (pilihan == "0") {
             cout << "\nKeluar dari program..." << endl;
             break; 
