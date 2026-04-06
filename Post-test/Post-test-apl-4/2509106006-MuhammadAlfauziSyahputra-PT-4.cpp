@@ -278,7 +278,7 @@ void updateProduk() {
     } else {
         cout << "Produk ditemukan: " << mabel[index].namaProduk << endl;
         // Mengoper pointer ke struct produk menggunakan address-of operator
-        produk *pProdukDipilih = &mabel[index]; // pointer pada struct)
+        produk *pProdukDipilih = &mabel[index]; // pointer pada struct
         updateFieldProduk(pProdukDipilih);
         cout << "Produk berhasil diupdate." << endl;
     }
@@ -306,7 +306,7 @@ void createProduk(int *pMabelIndex) {
             cout << "ID Produk sudah digunakan. Silakan coba ID lain." << endl;
         } else {
             // Pointer ke slot produk baru untuk kemudahan akses
-            produk *pProdukBaru = &mabel[*pMabelIndex]; // pointer ke struct produk (implementasi pointer pada struct)
+            produk *pProdukBaru = &mabel[*pMabelIndex]; // pointer pada struct
             pProdukBaru->idProduk = idBaru;
             cout << "Masukkan Nama Produk: ";
             getline(cin, pProdukBaru->namaProduk);
