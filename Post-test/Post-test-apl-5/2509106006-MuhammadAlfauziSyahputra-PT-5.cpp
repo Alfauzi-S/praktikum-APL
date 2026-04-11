@@ -2,7 +2,6 @@
 #include <iomanip>
 #include <tabulate/table.hpp>
 #include <limits>
-#include <algorithm>
 
 using namespace std;
 using namespace tabulate;
@@ -52,11 +51,6 @@ int mabelIndex = 5;
 dataAdmin admin[maxadmin];
 pengguna user[maxuser];
 produk mabel[maxproduk];
-
-void bubbleSortNamaProdukDescending(produk arr[], int n);
-void selectionSortHargaAscending(produk arr[], int n);
-void mergeSortStockAscending(produk arr[], int left, int right);
-void merge(produk arr[], int left, int mid, int right);
 
 void tampilkanMabel() {
     if (mabelIndex == 0) {
