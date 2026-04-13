@@ -102,54 +102,15 @@ void selectionSortHargaAscending(produk arr[], int n) {
     }
 }
 
-void merge(produk arr[], int left, int mid, int right) {
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
-
-    produk *leftArr = new produk[n1];
-    produk *rightArr = new produk[n2];
-
-    for (int i = 0; i < n1; i++)
-        leftArr[i] = arr[left + i];
-    for (int j = 0; j < n2; j++)
-        rightArr[j] = arr[mid + 1 + j];
-
-    int i = 0, j = 0, k = left;
-    while (i < n1 && j < n2) {
-        if (leftArr[i].stock <= rightArr[j].stock) {
-            arr[k] = leftArr[i];
-            i++;
-        } else {
-            arr[k] = rightArr[j];
-            j++;
+void insertionSortStockAscending(produk arr[], int n) {
+    for (int i = 1; i < n; i++) {
+        produk key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j].stock > key.stock) {
+            arr[j + 1] = arr[j];
+            j--;
         }
-        k++;
-    }
-
-    while (i < n1) {
-        arr[k] = leftArr[i];
-        i++;
-        k++;
-    }
-
-    while (j < n2) {
-        arr[k] = rightArr[j];
-        j++;
-        k++;
-    }
-
-    delete[] leftArr;
-    delete[] rightArr;
-}
-
-void mergeSortStockAscending(produk arr[], int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
-
-        mergeSortStockAscending(arr, left, mid);
-        mergeSortStockAscending(arr, mid + 1, right);
-
-        merge(arr, left, mid, right);
+        arr[j + 1] = key;
     }
 }
 
@@ -204,7 +165,7 @@ void menuSortProduk() {
                 system("cls");
                 cout << "\nDaftar Produk Sebelum Sorting (Stock - Ascending):\n";
                 tampilkanMabel();
-                mergeSortStockAscending(mabel, 0, mabelIndex - 1);
+                insertionSortStockAscending(mabel, mabelIndex);
                 cout << "\nDaftar Produk Setelah Sorting (Stock - Ascending):\n";
                 tampilkanMabel();
                 cout << "\nProduk berhasil diurutkan berdasarkan Stock (Rendah-Tinggi)!" << endl;
