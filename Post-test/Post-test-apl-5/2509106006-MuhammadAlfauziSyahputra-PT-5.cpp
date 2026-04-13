@@ -803,8 +803,6 @@ int main() {
                         } else if (pilihan == "2") {
                             system("cls");
                             beli(currentUser);
-                        } else if (pilihan == "3") {
-                            menuSortProduk();
                         } else if (pilihan == "0") {
                             cout << "\nLogout dari akun user..." << endl;
                             loginSukses = false;
