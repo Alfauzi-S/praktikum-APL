@@ -382,7 +382,8 @@ void tampilkanMenuUser() {
     tampilkanHeader("MENU USER");
     cout << "1. Read Data Saya" << endl;
     cout << "2. Read Produk dan Beli" << endl;
-    cout << "3. Search Produk" << endl;
+    cout << "3. Top Up" << endl;
+    cout << "4. Search Produk" << endl;
     cout << "0. Logout" << endl;
     cout << "Masukkan Pilihan: ";
 }
@@ -577,7 +578,7 @@ void createProduk(int *pMabelIndex) {
 }
 
 void deleteProduk() {
-    cout << "=== DELETE PRODUK ===" << endl;
+    tampilkanHeader("DELETE PRODUK");
     tampilkanMabel();
     
     try {
@@ -620,7 +621,7 @@ void deleteProduk() {
 }
 
 void tampilkanDataUser(string currentUser) {
-    cout << "=== DATA PROFIL SAYA ===" << endl;
+    tampilkanHeader("DATA PROFIL SAYA");
     bool userFound = false;
     for (int i = 0; i < userIndex; i++) {
         if (user[i].nama == currentUser) {
@@ -864,12 +865,14 @@ int main() {
                             } else if (pilihan == "2") {
                                 system("cls");
                                 updateProduk();
+                                system("pause");
                             } else if (pilihan == "3") {
                                 system("cls");
                                 createProduk(&mabelIndex);
                             } else if (pilihan == "4") {
                                 system("cls");
                                 deleteProduk();
+                                system("pause");
                             } else if (pilihan == "5") {
                                 menuSortProduk();
                             } else if (pilihan == "6") {
@@ -898,6 +901,9 @@ int main() {
                                 system("cls");
                                 beli(currentUser);
                             } else if (pilihan == "3") {
+                                system("cls");
+                                topup(currentUser);
+                            } else if (pilihan == "4") {
                                 menuSearchProduk();
                             } else if (pilihan == "0") {
                                 displayMessage("\nLogout dari akun user...");
